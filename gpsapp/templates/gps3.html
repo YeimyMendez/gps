@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Geolocalización</title>
+  </head>
+  <body>
+    <h1>Geolocalización</h1>
+    <p id="location"></p>
+    <form
+      method="post"
+      action="{% url 'guardar_ubicacion' %}"
+      id="location-form"
+    >
+      <!-- Agregamos un formulario con el método "post" -->
+      {% csrf_token %}
+      <input type="hidden" name="lat" id="lat" value="" />
+      <input type="hidden" name="lon" id="lon" value="" />
+    </form>
+    <script>
+      // Función para obtener una cookie por su nombre
+      function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          var cookies = document.cookie.split(";");
+          for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // ¿Esta cookie comienza con el nombre que buscamos?
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1)
+              );
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+          document.getElementById("location").innerHTML =
+            "La geolocalización no es compatible con este navegador.";
+        }
+      }
+
+      function showPosition(position) {
+        var lat = position.coords.latitude;
+        var lon = position.coords.longitude;
+        document.getElementById("location").innerHTML =
+          "Latitud: " + lat + "<br>Longitud: " + lon;
+
+        // Actualizamos los campos ocultos del formulario con las coordenadas
+        document.getElementById("lat").value = lat;
+        document.getElementById("lon").value = lon;
+
+        // Guardar la información en la base de datos al enviar el formulario
+        document.getElementById("location-form").submit();
+      }
+
+      // Actualizar la ubicación cada 60 segundos (60000 ms)
+      setInterval(function () {
+        getLocation();
+        document.getElementById("location-form").submit();
+      }, 5000);
+
+      // Ejecutar getLocation una vez al cargar la página
+      getLocation();
+    </script>
+  </body>
+</html>
