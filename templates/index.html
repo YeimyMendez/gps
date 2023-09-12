@@ -42,6 +42,42 @@
         </div>
     </nav>
     <!--End Navbar-->
+    <script>
+        function getLocationPermission() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("La geolocalización no es compatible con este navegador.");
+            }
+        }
+
+        function showPosition(position) {
+            // Aquí puedes realizar acciones con la ubicación
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("Permiso de geolocalización denegado por el usuario.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Información de ubicación no disponible.");
+                    break;
+                case error.TIMEOUT:
+                    alert("Tiempo de espera agotado para obtener la ubicación.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("Se produjo un error desconocido.");
+                    break;
+            }
+        }
+
+        // Llama a getLocationPermission() para solicitar el permiso cuando la página se carga
+        getLocationPermission();
+
+    </script>
     <div class="container">
         <div class="row mt-4">
             <div class="col-md-10 offset-md-1">
