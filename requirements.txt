@@ -1,5 +1,5 @@
 amqp==5.1.1
-asgiref==3.7.2
+asgiref>=3.7.2
 async-timeout==4.0.3
 billiard==4.1.0
 branca==0.6.0
