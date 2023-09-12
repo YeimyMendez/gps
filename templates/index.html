@@ -68,6 +68,8 @@
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
+        var marker;
+
         function updateLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(showPosition);
@@ -81,10 +83,19 @@
             // Actualiza la vista del mapa a la nueva ubicación
             map.setView([lat, lon]);
 
-            // Crea un marcador y lo agrega al mapa
-            var marker = L.marker([lat, lon]).addTo(map);
-            marker.bindPopup("Ubicación actual").openPopup();
+            if (marker) {
+                marker.setLatLng([lat, lon]); // Actualiza la posición del marcador
+            } else {
+                // Crea un marcador y lo agrega al mapa
+                marker = L.marker([lat, lon]).addTo(map);
+                marker.bindPopup("Ubicación actual").openPopup();
+            }
         }
+
+        // Hacer zoom al hacer clic en el marcador
+        map.on('popupopen', function () {
+            map.setView(marker.getLatLng(), 15); // Ajusta el nivel de zoom
+        });
 
         // Actualiza la ubicación cada segundo
         setInterval(updateLocation, 1000);
