@@ -25,10 +25,14 @@ SECRET_KEY = 'q&6-776h2-=9y5a84+fq29l=a+p#_9ns77!qte^+fj550#x5(w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+<<<<<<< HEAD
 # ALLOWED_HOSTS = ['gelionz.pythonanywhere.com']
+=======
+ALLOWED_HOSTS = []
+>>>>>>> 73ff77d0016c85d0d68a110279522fa0827b8933
 
 # pythonanywhere.com
-ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com']
+# ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com']
 
 
 # Application definition
