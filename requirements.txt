@@ -1,9 +1,9 @@
 amqp==5.1.1
-asgiref==3.4.0
-async-timeout==4.0.2
-billiard==3.6.4.0
-branca==0.5.0
-celery==5.2.4
+asgiref==3.6.0
+async-timeout==4.0.3
+billiard==4.1.0
+branca==0.6.0
+celery==5.3.4
 certifi==2023.7.22
 chardet==3.0.4
 click==8.1.7
