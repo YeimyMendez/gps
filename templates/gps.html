@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+
+    <title>Geo Gelionz</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'index' %}">Geo Gelionz</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'index' %}">Mapa<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'geolocation' %}">Guardar ubicación</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Contenedor del mapa -->
+    <div id="map" style="height: 400px;"></div>
+
+    <form method="post" action="{% url 'guardar_ubicacion' %}" id="location-form">
+        {% csrf_token %}
+        <input type="hidden" name="lat" id="lat" value="" />
+        <input type="hidden" name="lon" id="lon" value="" />
+    </form>
+
+    <!-- JavaScript y Leaflet -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script>
+        var map = L.map('map').setView([0, 0], 13); // Inicializa el mapa en el contenedor con ID "map"
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                document.getElementById("location").innerHTML =
+                    "La geolocalización no es compatible con este navegador.";
+            }
+        }
+
+        function showPosition(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+
+            // Actualiza la vista del mapa a la nueva ubicación
+            map.setView([lat, lon]);
+
+            // Crea un marcador y lo agrega al mapa
+            var marker = L.marker([lat, lon]).addTo(map);
+            marker.bindPopup("Ubicación actual").openPopup();
+
+            // Actualiza los campos ocultos del formulario con las coordenadas
+            document.getElementById("lat").value = lat;
+            document.getElementById("lon").value = lon;
+
+            // Guarda la información en la base de datos al enviar el formulario
+            document.getElementById("location-form").submit();
+        }
+
+        // Actualiza la ubicación cada segundo
+        setInterval(getLocation, 10000);
+    </script>
+</body>
+
+</html>
