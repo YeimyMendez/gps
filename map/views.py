@@ -26,18 +26,20 @@ def guardar_ubicacion(request):
             return HttpResponse(f'Error al guardar la ubicación: {str(e)}', status=400)
     else:
         return HttpResponse('Método no permitido', status=405)
-
-
+    
+@csrf_protect
 def index(request):
     if request.method == 'POST':
         form = SearchForm(request.POST)
         if form.is_valid():
+            address = form.cleaned_data['address']
             form.save()
-            return redirect('/')
+        else:
+            # Manejar el caso en que el formulario no sea válido (puedes agregar código adicional aquí)
+            address = None
     else:
         form = SearchForm()
-    
-    address = Search.objects.all().last()
+        address = None
     
     if address:
         location = geocoder.osm(address)
@@ -50,7 +52,6 @@ def index(request):
             # Obtener HTML Representation del objeto Map
             m = m._repr_html_()
         else:
-            address.delete()
             return HttpResponse('La dirección proporcionada es inválida', status=400)
     else:
         m = None

@@ -3,28 +3,21 @@
 <html lang="en">
 
 <head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Gps Gelionz</title>
 
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
         integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
 
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
-        crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-
+    <title>Gps Gelionz</title>
 </head>
 
 <body>
-    <!-- Navbar -->
+    <!--Navbar-->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">Geo Gelionz</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -41,27 +34,14 @@
                     <a class="nav-link" href="{% url 'geolocation' %}">Guardar ubicación</a>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'guardar_ubicacion' %}">
+            <form class="form-inline my-2 my-lg-0" method="POST">
                 {% csrf_token %}
                 {{ form|crispy }}
-                <input type="hidden" id="lat" name="lat" value="">
-                <input type="hidden" id="lon" name="lon" value="">
                 <button class="btn btn-outline-success my-2 my-sm-0 mx-3" type="submit">Search</button>
             </form>
         </div>
     </nav>
-    <!-- End Navbar -->
-
-    <div class="container">
-        <div class="row mt-4">
-            <div class="col-md-10 offset-md-1">
-                <!-- Map Container -->
-                <div id="map" style="height: 400px;"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- JavaScript for Real-Time Location -->
+    <!--End Navbar-->
     <script>
         function getLocationPermission() {
             if (navigator.geolocation) {
@@ -71,40 +51,11 @@
             }
         }
 
-        var map = L.map('map').setView([0, 0], 13); // Inicializa el mapa en el contenedor con ID "map"
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        var marker;
-
         function showPosition(position) {
             // Aquí puedes realizar acciones con la ubicación
             var lat = position.coords.latitude;
             var lon = position.coords.longitude;
-
-            // Actualiza la vista del mapa a la nueva ubicación
-            map.setView([lat, lon]);
-
-            if (marker) {
-                marker.setLatLng([lat, lon]); // Actualiza la posición del marcador
-            } else {
-                // Crea un marcador y lo agrega al mapa
-                marker = L.marker([lat, lon]).addTo(map);
-                marker.bindPopup("Ubicación actual").openPopup();
-            }
-
-            // Actualiza los campos ocultos del formulario con las coordenadas
-            document.getElementById("lat").value = lat;
-            document.getElementById("lon").value = lon;
-
-            // Guarda la información en la base de datos al enviar el formulario
-            document.getElementById("location-form").submit();
         }
-        // Hacer zoom al hacer clic en el marcador
-        map.on('popupopen', function () {
-            map.setView(marker.getLatLng(), 15); // Ajusta el nivel de zoom
-        });
 
         function showError(error) {
             switch (error.code) {
@@ -126,6 +77,67 @@
         // Llama a getLocationPermission() para solicitar el permiso cuando la página se carga
         getLocationPermission();
 
+    </script>
+    <div class="container">
+        <div class="row mt-4">
+            <div class="col-md-10 offset-md-1">
+                <!-- Contenedor del mapa -->
+                <div id="map" style="height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
+        crossorigin="anonymous"></script>
+
+    <!-- Script para la ubicación en tiempo real -->
+    <script>
+        var map = L.map('map').setView([0, 0], 13); // Inicializa el mapa en el contenedor con ID "map"
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        var marker;
+
+        function updateLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            }
+        }
+
+        function showPosition(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+
+            // Actualiza la vista del mapa a la nueva ubicación
+            map.setView([lat, lon]);
+
+            if (marker) {
+                marker.setLatLng([lat, lon]); // Actualiza la posición del marcador
+            } else {
+                // Crea un marcador y lo agrega al mapa
+                marker = L.marker([lat, lon]).addTo(map);
+                marker.bindPopup("Ubicación actual").openPopup();
+            }
+        }
+
+        // Hacer zoom al hacer clic en el marcador
+        map.on('popupopen', function () {
+            map.setView(marker.getLatLng(), 15); // Ajusta el nivel de zoom
+        });
+
+        // Actualiza la ubicación cada segundo
+        setInterval(updateLocation, 1000);
+
+        // Llama a updateLocation() para mostrar la ubicación inicial
+        updateLocation();
     </script>
 </body>
 
