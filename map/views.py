@@ -28,6 +28,14 @@ def geolocation(request):
 #         return HttpResponse('Método no permitido', status=405)
 
 
+def obtener_ip_cliente(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip_cliente = x_forwarded_for.split(',')[0]
+    else:
+        ip_cliente = request.META.get('REMOTE_ADDR')
+    return ip_cliente
+
 @csrf_protect
 def guardar_ubicacion(request):
     if request.method == 'POST':
@@ -35,7 +43,7 @@ def guardar_ubicacion(request):
         lon = request.POST.get('lon')
         
         # Obtener la dirección IP del usuario
-        user_ip = request.META['REMOTE_ADDR']
+        user_ip = obtener_ip_cliente(request)
         
         location = Location(latitude=lat, longitude=lon, ip_address=user_ip)
         try:
