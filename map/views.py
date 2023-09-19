@@ -11,12 +11,33 @@ import geocoder
 def geolocation(request):
     return render(request, 'gps.html')
 
+# @csrf_protect
+# def guardar_ubicacion(request):
+#     if request.method == 'POST':
+#         lat = request.POST.get('lat')
+#         lon = request.POST.get('lon')
+#         location = Location(latitude=lat, longitude=lon)
+#         try:
+#             location.save()
+#             # Redireccionar a la página 'gps.html' una vez que se haya guardado la ubicación
+#             return redirect('geolocation')
+#         except Exception as e:
+#             # Cambiado a status=400 en caso de error
+#             return HttpResponse(f'Error al guardar la ubicación: {str(e)}', status=400)
+#     else:
+#         return HttpResponse('Método no permitido', status=405)
+
+
 @csrf_protect
 def guardar_ubicacion(request):
     if request.method == 'POST':
         lat = request.POST.get('lat')
         lon = request.POST.get('lon')
-        location = Location(latitude=lat, longitude=lon)
+        
+        # Obtener la dirección IP del usuario
+        user_ip = request.META['REMOTE_ADDR']
+        
+        location = Location(latitude=lat, longitude=lon, ip_address=user_ip)
         try:
             location.save()
             # Redireccionar a la página 'gps.html' una vez que se haya guardado la ubicación
@@ -26,6 +47,7 @@ def guardar_ubicacion(request):
             return HttpResponse(f'Error al guardar la ubicación: {str(e)}', status=400)
     else:
         return HttpResponse('Método no permitido', status=405)
+
     
 @csrf_protect
 def index(request):

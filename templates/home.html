@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>GPS App</title>
+</head>
+
+<body>
+    <h1>Ubicaciones</h1>
+    <ul>
+        {% for ubicacion in ubicaciones %}
+        <li>{{ ubicacion }}</li>
+        {% endfor %}
+    </ul>
+    <script>
+        function obtenerUbicacion() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.watchPosition(function (position) {
+                    var latitud = position.coords.latitude;
+                    var longitud = position.coords.longitude;
+                    enviarUbicacion(latitud, longitud);
+                });
+            }
+        }
+
+        function enviarUbicacion(latitud, longitud) {
+            $.ajax({
+                url: '/guardar_ubicacion/',
+                type: 'POST',
+                data: {
+                    'latitud': latitud,
+                    'longitud': longitud,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data.message);
+                },
+                error: function (error) {
+                    console.log('Error al enviar la ubicación');
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            obtenerUbicacion();
+        });
+
+    </script>
+</body>
+
+</html>

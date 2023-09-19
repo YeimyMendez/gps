@@ -17,4 +17,6 @@ class Location(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
     timestamp = models.DateTimeField(auto_now_add=True)
+    ip_address = models.CharField(max_length=15)  # Campo para la dirección IP
+
 

@@ -16,9 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from map import views as map_views
+# from ubicacion import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', map_views.index, name='index'),
+    # path('', views.home, name='home'),
     path('map/', include('map.urls')),
 ]
