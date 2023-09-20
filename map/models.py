@@ -12,11 +12,26 @@ class Search(models.Model):
         return self.address
 
 
+# class Location(models.Model):
+#     id = models.BigAutoField(primary_key=True)
+#     latitude = models.FloatField()
+#     longitude = models.FloatField()
+#     timestamp = models.DateTimeField(auto_now_add=True)
+#     ip_address = models.CharField(max_length=15)  # Campo para la dirección IP
+
+
 class Location(models.Model):
     id = models.BigAutoField(primary_key=True)
     latitude = models.FloatField()
     longitude = models.FloatField()
     timestamp = models.DateTimeField(auto_now_add=True)
     ip_address = models.CharField(max_length=15)  # Campo para la dirección IP
+    
+    # Agrega el campo 'ubicacion'
+    ubicacion = models.JSONField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Location {self.id}"
+
 
 
